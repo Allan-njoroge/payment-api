@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(uuid())
+  first_name String
+  last_name String
+  email_address String @unique
+  phone_number String? @unique
+  password String
+  created_at DateTime @default(now())
+
+  refresh_token RefreshToken?
+  wallets Wallet[]
+}
+
+model RefreshToken {
+  id String @id @default(uuid())
+  refresh_token String @unique
+  user_id String @unique
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model VerificationCode {
+  verification_code Int @unique
+  email_address String @unique
+  expires_at DateTime
+}
+
+model Wallet {
+  id String @id @default(uuid())
+  wallet_address String @unique
+  amount Decimal
+  user_id String
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
