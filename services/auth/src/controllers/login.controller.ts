@@ -2,7 +2,7 @@ import { Response, Request } from "express";
 import { compareSync } from "bcryptjs";
 import logger from "../utils/looger";
 import prisma from "../services/prisma";
-import generateTokens from "../utils/generateTokens";
+import {generateTokens} from "../utils/tokens";
 
 interface LoginDetails {
   email_address: string;

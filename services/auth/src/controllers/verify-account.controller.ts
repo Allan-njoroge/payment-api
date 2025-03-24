@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import logger from "../utils/looger";
 import prisma from "../services/prisma";
 import bcrypt from "bcryptjs";
-import generateTokens from "../utils/generateTokens";
+import {generateTokens} from "../utils/tokens";
 
 export const verifyAccount = async (
   req: Request,
