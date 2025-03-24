@@ -69,18 +69,18 @@ export const verifyAccount = async (
 
     // add wallet address to the database
     await prisma.wallet.create({
-        data: {
-            wallet_address: walletAddress,
-            amount: 0.0,
-            user_id: newUser.id
-        }
-    })
+      data: {
+        wallet_address: walletAddress,
+        amount: 0.0,
+        user_id: newUser.id,
+      },
+    });
 
     deleteVerificationCode(verification_code, email_address); // delete the verification code in the database
     logger.info(`User registered successfully: ${email_address}`); // log the user success message
     return res
       .status(201)
-      .cookie("refresh_token", tokens.hashedRefreshToken, {
+      .cookie("refresh_token", tokens.refreshToken, {
         httpOnly: true,
         secure: false,
         sameSite: "none",

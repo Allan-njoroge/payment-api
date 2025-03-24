@@ -8,7 +8,7 @@ dotenv.config();
 
 interface TokenResponse {
   accessToken: string,
-  hashedRefreshToken: string
+  refreshToken: string
 }
 
 const generateTokens = async (userId: string): Promise<TokenResponse> => {
@@ -41,7 +41,7 @@ const generateTokens = async (userId: string): Promise<TokenResponse> => {
   })
   
 
-  return { accessToken, hashedRefreshToken };
+  return { accessToken, refreshToken };
 };
 
 export default generateTokens;
