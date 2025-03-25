@@ -43,3 +43,9 @@ model Wallet {
 
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
+
+model BlacklistedToken {
+  id String @id @default(uuid())
+  token String
+  type String
+}

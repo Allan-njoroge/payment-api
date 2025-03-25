@@ -4,17 +4,30 @@ import logger from "../utils/looger";
 import prisma from "../services/prisma";
 import { generateTokens } from "../utils/tokens";
 
-export const refreshToken = async (req: Request, res: Response) => {
+export const refreshToken = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
     const { refresh_token } = req.cookies;
     if (!refresh_token) {
       return res.status(400).json({ message: "Refresh token is required" });
     }
 
+    const blacklisted = await prisma.blacklistedToken.findFirst({
+      where: {token: refresh_token}
+    })
+    if (blacklisted) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
     // Verify the refresh token
     let payload;
     try {
-      payload = jwt.verify(refresh_token, process.env.REFRESH_TOKEN_SECRET as string) as JwtPayload;
+      payload = jwt.verify(
+        refresh_token,
+        process.env.REFRESH_TOKEN_SECRET as string
+      ) as JwtPayload;
     } catch (error) {
       return res.status(403).json({ message: "Invalid or expired token" });
     }
@@ -31,8 +44,12 @@ export const refreshToken = async (req: Request, res: Response) => {
     // Generate new access and refresh tokens (handles hashing & updating DB)
     const newTokens = await generateTokens(payload.id);
 
+    await prisma.blacklistedToken.create({
+      data: { token: refresh_token, type: "refresh" },
+    });
+
     // Set new refresh token in HTTP-Only Cookie
-    res
+    return res
       .status(200)
       .cookie("refresh_token", newTokens.refreshToken, {
         httpOnly: true,
