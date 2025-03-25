@@ -265,3 +265,4 @@
 {"level":"info","message":"server is running in http://localhost:5001","service":"AUTH","timestamp":"2025-03-25T14:12:38.602Z"}
 {"level":"info","message":"server is running in http://localhost:5001","service":"AUTH","timestamp":"2025-03-25T14:14:57.359Z"}
 {"level":"info","message":"server is running in http://localhost:5001","service":"AUTH","timestamp":"2025-03-25T14:16:32.367Z"}
+{"level":"info","message":"server is running in http://localhost:5001","service":"AUTH","timestamp":"2025-03-25T14:18:06.787Z"}

@@ -8,12 +8,18 @@ export const logoutUser = async (
 ): Promise<Response> => {
   try {
     const { refresh_token } = req.cookies;
-    
+
     // Ensure token exists
     if (!refresh_token) {
       return res.status(400).json({ error: "No refresh token provided" });
     }
+    const blacklisted = await prisma.blacklistedToken.findFirst({
+      where: { token: refresh_token, type: "refresh" },
+    });
 
+    if(blacklisted) {
+      return res.status(500).json({ message: "Token already blacklisted" })
+    }
     // Blacklist the token
     await prisma.blacklistedToken.create({
       data: { token: refresh_token, type: "refresh" },
