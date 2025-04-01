@@ -1,6 +1,6 @@
 import { Response, Request } from "express";
 import { compareSync } from "bcryptjs";
-import logger from "../utils/looger";
+import logger from "../utils/logger";
 import prisma from "../services/prisma";
 import {generateTokens} from "../utils/tokens";
 

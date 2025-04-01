@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../services/prisma";
-import logger from "../utils/looger";
+import logger from "../utils/logger";
 import bcrypt from "bcryptjs";
 
 export const forgotPassword = async (

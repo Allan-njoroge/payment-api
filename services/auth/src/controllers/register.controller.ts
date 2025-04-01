@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import logger from "../utils/looger";
+import logger from "../utils/logger";
 import prisma from "../services/prisma";
 import bcrypt from "bcryptjs";
 import { generateTokens } from "../utils/tokens";

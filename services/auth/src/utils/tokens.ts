@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import logger from "./looger";
+import logger from "./logger";
 import prisma from "../services/prisma";
 import { compareSync, genSaltSync, hashSync } from "bcryptjs";
 
