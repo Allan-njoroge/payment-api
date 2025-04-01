@@ -1,19 +1,28 @@
 type AuthEmailTypes = {
-  first_name: string;
-  last_name: string;
+  email_address: string;
   verification_code: number;
 };
 
 export const authEmail = ({
-  first_name,
-  last_name,
+  email_address,
   verification_code,
 }: AuthEmailTypes): string => {
   const email: string = `
-    <b>Hello ${first_name} ${last_name}</b>,
+    <b>Hello ${email_address}</b>,
     <br/>
-    <p>We are pleased to have you at Payment API. To complete you registration, please verify you account.
-    Your verification code is: <span style="color: #7c3aed">${verification_code}</span></p>
+    <p>
+      We are pleased to have you at Payment API. To complete you registration, please verify you account.
+      <br/>
+      Your verification code is: <span style="color: #7c3aed">${verification_code}</span>
+    </p>
+    <br/> 
+    <p><b>NOTE: </b> This code is valid for 10 minutes</p>
+    <br/><br/>
+    <p>
+      Best Regards
+      <br/>
+      Payment API Team
+    </p>
     `;
   return email;
 };
