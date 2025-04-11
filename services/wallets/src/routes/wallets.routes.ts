@@ -6,11 +6,13 @@ import { deleteWallet } from "../controllers/delete.controller";
 import { getWalletById } from "../controllers/getWalletById";
 import { getWalletsByUserId } from "../controllers/getByUser.controller";
 import { authenticateRequest } from "../middleware/authenticateRequest";
+import { getWalletByAdress } from "../controllers/getWalletByAddress";
 
 const router: Router = express.Router()
 router.use(authenticateRequest)
 
 router.get("/:wallet_id", asyncHandler(getWalletById))
+router.get("/:wallet_address", asyncHandler(getWalletByAdress))
 router.get("/me", asyncHandler(getWalletsByUserId))
 router.post("/create", asyncHandler(createWallet))
 router.put("/update/:wallet_id", asyncHandler(updateWallet))
