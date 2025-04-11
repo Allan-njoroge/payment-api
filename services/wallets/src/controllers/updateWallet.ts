@@ -12,6 +12,11 @@ export const updateWallet = async (
     const wallet_id = req.params.wallet_id;
     const { amount, pin, new_pin, re_new_pin } = req.body;
 
+    // check if pin is available
+    if (!pin) {
+      return res.status(500).json({ message: "PIN is required" });
+    }
+
     const wallet = await prisma.wallet.findUnique({
       where: { id: wallet_id },
     });
@@ -29,7 +34,19 @@ export const updateWallet = async (
     }
 
     // If no pin only thing that can be updated is amount
-    if (!pin) {
+    if (amount) {
+      // make sure that the new PIN fields are empty during transactions
+      if (new_pin || re_new_pin) {
+        return res
+          .status(400)
+          .json({ message: "PIN can't be changed during transactions" });
+      }
+
+      // validate PIN number
+      if (!compareSync(pin, wallet.pin)) {
+        return res.status(401).json({ message: "Invalid PIN" });
+      }
+
       await prisma.wallet.update({
         data: { amount },
         where: { id: wallet_id },
@@ -41,6 +58,12 @@ export const updateWallet = async (
 
     // check if new PIN and confirm new PIN is in the request
     if (!new_pin || !re_new_pin) {
+      // make sure the amount field is empty during change PIN request
+      if (amount) {
+        return res
+          .status(400)
+          .json({ message: "Amount can't be updated during PIN change" });
+      }
       return res
         .status(400)
         .json({ message: "New PIN and confirm new PIN are required" });
@@ -55,7 +78,7 @@ export const updateWallet = async (
 
     // Update the PIN
     if (!compareSync(pin, wallet.pin)) {
-      return res.status(403).json({ message: "Incorrect PIN" });
+      return res.status(403).json({ message: "Invalid PIN" });
     }
 
     // hash the pin
@@ -66,7 +89,9 @@ export const updateWallet = async (
       where: { id: wallet_id },
     });
 
-    return res.status(200).json({ message: "PIN has been changed successfully" });
+    return res
+      .status(200)
+      .json({ message: "PIN has been changed successfully" });
   } catch (error: any) {
     logger.error("Error updating wallet", error);
     return res.status(500).json({ error: "Error updating wallet" });
