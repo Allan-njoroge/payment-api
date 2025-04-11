@@ -17,7 +17,6 @@ model User {
   created_at DateTime @default(now())
 
   refresh_token RefreshToken?
-  wallets Wallet[]
 }
 
 model RefreshToken {
@@ -32,16 +31,6 @@ model VerificationCode {
   verification_code Int @unique
   email_address String @unique
   expires_at DateTime
-}
-
-model Wallet {
-  id String @id @default(uuid())
-  wallet_address String @unique
-  amount Decimal
-  user_id String
-  created_at DateTime @default(now())
-
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model BlacklistedToken {

@@ -72,24 +72,6 @@ export const registerUser = async (
 
     // generate the access token an refresh token
     const tokens = await generateTokens(newUser.id);
-    let walletAddress: string;
-    let walletExists: any;
-
-    do {
-      walletAddress = generateWalletAddress();
-      walletExists = await prisma.wallet.findUnique({
-        where: { wallet_address: walletAddress },
-      });
-    } while (walletExists);
-
-    // add wallet address to the database
-    await prisma.wallet.create({
-      data: {
-        wallet_address: walletAddress,
-        amount: 0.0,
-        user_id: newUser.id,
-      },
-    });
 
     deleteVerificationCode(verification_code, email_address); // delete the verification code in the database
     logger.info(`User registered successfully: ${email_address}`); // log the user success message

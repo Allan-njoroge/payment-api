@@ -55,7 +55,7 @@ export const refreshToken = async (
         httpOnly: true,
         secure: false, // Change to `false` in dev
         sameSite: "strict",
-        path: "/api/auth/refresh",
+        path: "/",
       })
       .json({ access_token: newTokens.accessToken });
   } catch (error: any) {
