@@ -12,16 +12,23 @@ export const getWalletsByUserId = async (
       where: {
         user_id,
       },
+      select: {
+        id: true,
+        wallet_address: true,
+        amount: true,
+        created_at: true,
+        walletType: {
+          select: {
+            type: true
+          }
+        },
+      }
     });
 
     if (!userWallets) {
       return res.status(404).json({ message: "User has no wallets" });
     }
-
-    const userWalletsInfo = userWallets.map(
-      ({ user_id, pin, ...walletInfo }) => walletInfo
-    );
-    return res.status(200).json({ wallets: userWalletsInfo });
+    return res.status(200).json({ wallets: userWallets });
   } catch (error: any) {
     logger.error("Failed to fetch accounts: ", error);
     return res.status(500).json({ message: "Failed to fetch accounts" });

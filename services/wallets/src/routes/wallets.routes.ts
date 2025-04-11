@@ -7,15 +7,19 @@ import { getWalletById } from "../controllers/getWalletById";
 import { getWalletsByUserId } from "../controllers/getByUser.controller";
 import { authenticateRequest } from "../middleware/authenticateRequest";
 import { getWalletByAdress } from "../controllers/getWalletByAddress";
+import { getAllWalletTypes } from "../controllers/getALLWalletTypes";
 
 const router: Router = express.Router()
 router.use(authenticateRequest)
 
-router.get("/:wallet_id", asyncHandler(getWalletById))
-router.get("/:wallet_address", asyncHandler(getWalletByAdress))
+router.get("/id/:wallet_id", asyncHandler(getWalletById))
+router.get("/address/:wallet_address", asyncHandler(getWalletByAdress))
 router.get("/me", asyncHandler(getWalletsByUserId))
 router.post("/create", asyncHandler(createWallet))
 router.put("/update/:wallet_id", asyncHandler(updateWallet))
 router.delete("/delete/:wallet_id", asyncHandler(deleteWallet))
+
+
+router.get("/types", asyncHandler(getAllWalletTypes))
 
 export default router

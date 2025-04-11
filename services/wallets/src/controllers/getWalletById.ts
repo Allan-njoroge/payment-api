@@ -23,8 +23,12 @@ export const getWalletById = async (
         user_id: true,
         wallet_address: true,
         amount: true,
-        type_id: true,
         created_at: true,
+        walletType: {
+          select: {
+            type: true
+          }
+        },
       },
     });
 
