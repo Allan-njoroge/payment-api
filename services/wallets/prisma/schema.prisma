@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Wallet {
+  id String @id @default(uuid())
+  wallet_address String @unique
+  amount Decimal @default(0.0) @db.Decimal(50,2)
+  pin String
+  user_id String
+  type_id String
+  created_at DateTime @default(now())
+
+  walletType WalletType @relation(fields: [type_id], references: [id], onDelete: NoAction)
+}
+
+model WalletType {
+  id String @id @default(uuid())
+  type String
+
+  wallets Wallet[]
+}
