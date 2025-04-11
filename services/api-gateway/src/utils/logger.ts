@@ -7,7 +7,7 @@ const logger = winston.createLogger({
     winston.format.splat(),
     winston.format.json()
   ),
-  defaultMeta: { service: "AUTH" },
+  defaultMeta: { service: "API-GATEWAY" },
   transports: [
     new winston.transports.Console({
       format: winston.format.combine(
