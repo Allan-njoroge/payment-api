@@ -6,7 +6,7 @@ dotenv.config();
 let connection = null;
 let channel: Channel | null = null;
 
-const EXCHANGE_NAME = "auth_notification";
+const EXCHANGE_NAME = "payment_api"
 
 export const connectToRabbitMQ = async (): Promise<Channel | null> => {
   try {
