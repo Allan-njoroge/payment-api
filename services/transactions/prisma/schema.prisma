@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Transaction {
+  id String @id @default(uuid())
+  wallet_from String
+  wallet_to String
+  amount Decimal @db.Decimal(10,2)
+  date DateTime @default(now())
+}
+
+model Withdrawal {
+  id String @id @default(uuid())
+  wallet_address String
+  amount Decimal @db.Decimal(10,2)
+  reference String @unique
+  date DateTime @default(now())
+}
+
+model Deposit {
+  id String  @id @default(uuid())
+  wallet_address String
+  amount Decimal @db.Decimal(10,2)
+  reference String @unique
+  date DateTime @default(now())
+}
