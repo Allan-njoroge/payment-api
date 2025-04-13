@@ -4,11 +4,11 @@ import dotenv from "dotenv";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { validateToken } from "./middleware/auth.middleware";
 import proxy from "express-http-proxy";
-import cookieParser from "cookie-parser"
+import cookieParser from "cookie-parser";
 
 const app: Application = express();
 dotenv.config();
-app.use(cookieParser())
+app.use(cookieParser());
 
 const proxyOptions = {
   proxyReqPathResolver: (req: Request) => {
@@ -28,7 +28,7 @@ app.use(
   proxy(process.env.AUTH_SERVICE_URL as string, {
     ...proxyOptions,
     proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
-      proxyReqOpts.headers = proxyReqOpts.headers || {}
+      proxyReqOpts.headers = proxyReqOpts.headers || {};
       proxyReqOpts.headers["Content-Type"] = "application/json";
       return proxyReqOpts;
     },
@@ -42,8 +42,27 @@ app.use(
   })
 );
 
+app.use(
+  "/api/accounts",
+  proxy(process.env.AUTH_SERVICE_URL as string, {
+    ...proxyOptions,
+    proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
+      proxyReqOpts.headers = proxyReqOpts.headers || {};
+      // proxyReqOpts.headers["Content-Type"] = "application/json";
+      return proxyReqOpts;
+    },
+    userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
+      logger.info(
+        `Response received from auth service: ${proxyRes.statusCode}`
+      );
+
+      return proxyResData;
+    },
+  })
+);
+
 interface CustomRequest extends Request {
-  user?: { id: string };  // Adjust this to the actual shape of your user object
+  user?: { id: string }; // Adjust this to the actual shape of your user object
 }
 app.use(
   "/api/wallets",
@@ -51,10 +70,10 @@ app.use(
   proxy(process.env.WALLETS_SERVICE_URL as string, {
     ...proxyOptions,
     proxyReqOptDecorator: (proxyReqOpts, srcReq: CustomRequest) => {
-      proxyReqOpts.headers = proxyReqOpts.headers || {}
+      proxyReqOpts.headers = proxyReqOpts.headers || {};
       // proxyReqOpts.headers["Content-Type"] = "application/json";
 
-      const userId = srcReq.user?.id
+      const userId = srcReq.user?.id;
       if (!userId) throw new Error("User ID missing in request.");
       proxyReqOpts.headers["x-user-id"] = userId;
 
@@ -63,6 +82,31 @@ app.use(
     userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
       logger.info(
         `Response received from wallets service: ${proxyRes.statusCode}`
+      );
+
+      return proxyResData;
+    },
+  })
+);
+
+app.use(
+  "/api/transactions",
+  validateToken,
+  proxy(process.env.TRANSACTIONS_SERVICE_URL as string, {
+    ...proxyOptions,
+    proxyReqOptDecorator: (proxyReqOpts, srcReq: CustomRequest) => {
+      proxyReqOpts.headers = proxyReqOpts.headers || {};
+      // proxyReqOpts.headers["Content-Type"] = "application/json";
+
+      const userId = srcReq.user?.id;
+      if (!userId) throw new Error("User ID missing in request.");
+      proxyReqOpts.headers["x-user-id"] = userId;
+
+      return proxyReqOpts;
+    },
+    userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
+      logger.info(
+        `Response received from transactions service: ${proxyRes.statusCode}`
       );
 
       return proxyResData;
