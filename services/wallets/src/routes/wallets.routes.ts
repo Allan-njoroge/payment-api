@@ -7,7 +7,8 @@ import { getWalletById } from "../controllers/getWalletById";
 import { getWalletsByUserId } from "../controllers/getByUser.controller";
 import { authenticateRequest } from "../middleware/authenticateRequest";
 import { getWalletByAdress } from "../controllers/getWalletByAddress";
-import { getAllWalletTypes } from "../controllers/getALLWalletTypes";
+import { getAllWalletTypes } from "../controllers/getAllWalletTypes";
+import { validatePin } from "../controllers/validatePin";
 
 const router: Router = express.Router()
 router.use(authenticateRequest)
@@ -21,5 +22,7 @@ router.delete("/delete/:wallet_id", asyncHandler(deleteWallet))
 
 
 router.get("/types", asyncHandler(getAllWalletTypes))
+
+router.post("/validate-pin", asyncHandler(validatePin))
 
 export default router
