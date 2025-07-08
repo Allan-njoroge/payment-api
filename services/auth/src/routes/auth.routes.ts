@@ -1,19 +1,39 @@
 import { Router } from "express";
-import { asyncHandler } from "../utils/asyncHandler";
-import {verifyContact} from "../controllers/verify-contact.controller";
-import { registerUser } from "../controllers/register.controller";
-import { loginUser } from "../controllers/login.controller";
-import { refreshToken } from "../controllers/refresh-token.controller";
-import { forgotPassword } from "../controllers/forgot-password.controller";
-import { logoutUser } from "../controllers/logout.controller";
+import {
+  loginUser,
+  logoutUser,
+  registerUser,
+  verifyUser,
+} from "src/controllers/auth.controller";
+import validateRequest from "src/middleware/validateRequest";
+import {
+  loginUserSchema,
+  registerUserSchema,
+  verifyUserSchema,
+} from "src/schema/auth.schema";
+import { asyncHandler } from "src/utils/asyncHandler";
 
-const router: Router = Router();
+const router = Router();
 
-router.post("/verify-contact", asyncHandler(verifyContact))
-router.post("/register", asyncHandler(registerUser));
-router.post("/login", asyncHandler(loginUser))
-router.post("/refresh-token", asyncHandler(refreshToken))
-router.post('/forgot-password', asyncHandler(forgotPassword))
-router.post('/logout', asyncHandler(logoutUser))
+router.post(
+  "/register",
+  validateRequest(registerUserSchema),
+  asyncHandler(registerUser)
+);
+router.post(
+  "/verify",
+  validateRequest(verifyUserSchema),
+  asyncHandler(verifyUser)
+);
+router.post(
+  "/login",
+  validateRequest(loginUserSchema),
+  asyncHandler(loginUser)
+);
+router.post(
+  "/logout",
+  asyncHandler(logoutUser)
+
+)
 
 export default router;

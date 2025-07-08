@@ -4,6 +4,7 @@ import logger from "./utils/logger";
 import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/auth.routes";
+import accountRoutes from "./routes/accounts.routes"
 
 import { connectToRabbitMQ } from "./services/rabbitmq";
 
@@ -15,6 +16,7 @@ app.use(cookieParser());
 
 // routes definition
 app.use("/api/auth", authRoutes);
+app.use("/api/accounts", accountRoutes)
 
 connectToRabbitMQ();
 

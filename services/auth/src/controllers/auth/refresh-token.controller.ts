@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import logger from "../utils/logger";
-import prisma from "../services/prisma";
-import { generateTokens } from "../utils/tokens";
+import logger from "../../utils/logger";
+import prisma from "../../utils/prisma";
+import { generateTokens } from "../../utils/tokens";
 
 export const refreshToken = async (
   req: Request,

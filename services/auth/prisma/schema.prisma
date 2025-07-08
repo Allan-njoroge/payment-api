@@ -13,10 +13,12 @@ model User {
   last_name String
   email_address String @unique
   phone_number String? @unique
+  is_active Boolean @default(false)
   password String
   created_at DateTime @default(now())
 
   refresh_token RefreshToken?
+  verification_codes VerificationCode?
 }
 
 model RefreshToken {
@@ -28,13 +30,21 @@ model RefreshToken {
 }
 
 model VerificationCode {
-  verification_code Int @unique
-  email_address String @unique
-  expires_at DateTime
+  id String @id @default(uuid())
+  user_id String @unique
+  verification_code Int
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model BlacklistedToken {
   id String @id @default(uuid())
   token String
-  type String
+  type TokenType
+  created_at DateTime @default(now())
+}
+
+enum TokenType {
+  access
+  refresh
 }
