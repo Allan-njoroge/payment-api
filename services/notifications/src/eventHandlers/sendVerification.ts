@@ -1,28 +1,31 @@
-import { sendEmail } from "../services/email.service";
-import logger from "../utils/logger";
-import { authEmail } from "../templates/auth/email";
-import { sendSMS } from "../services/message.service";
-import { authMessage } from "../templates/auth/message";
+import { sendEmail } from "src/services/email.service";
+import logger from "src/utils/logger";
+import { authEmail } from "src/templates/auth/email";
+import { sendSMS } from "src/services/message.service";
+import { authMessage } from "src/templates/auth/message";
 
-export const sendVerificationCodeEvent = async (event: {
-  phone_number?: string;
-  email_address: string;
-  verification_code: number;
-}) => {
+type EventType = {
+  phoneNumber?: string,
+  emailAddress: string,
+  firstName: string,
+  verificationCode: number ,
+}
+
+export const sendVerificationCodeEvent = async ({emailAddress, phoneNumber, verificationCode, firstName}: EventType) => {
   try {
     await sendEmail({
-      to: event.email_address,
+      to: emailAddress,
       subject: "Payment API - COMPLETE REGISTRATION PROCESS",
       html: authEmail({
-        email_address: event.email_address,
-        verification_code: event.verification_code,
+        firstName,
+        verificationCode,
       }),
     });
 
-    if (event.phone_number) {
+    if (phoneNumber) {
       await sendSMS({
-        phoneNumber: event.phone_number,
-        message: authMessage({ verification_code: event.verification_code }),
+        phoneNumber: phoneNumber,
+        message: authMessage({ firstName, verificationCode }),
       });
     }
   } catch (error: any) {

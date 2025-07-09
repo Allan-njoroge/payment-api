@@ -1,15 +1,15 @@
-import { sendEmail } from "../services/email.service";
-import { sendSMS } from "../services/message.service";
+import { sendEmail } from "src/services/email.service";
+import { sendSMS } from "src/services/message.service";
 import {
   depositRecepientSuccessEmail,
   depositorSuccessEmail,
-} from "../templates/depositSuccess/email";
+} from "src/templates/depositSuccess/email";
 import {
   depositorSuccessMessage,
   depositRecepientSuccessMessage,
-} from "../templates/depositSuccess/message";
-import logger from "../utils/logger";
-import { DepositRecepientSuccessType } from "../utils/types";
+} from "src/templates/depositSuccess/message";
+import logger from "src/utils/logger";
+import { DepositRecepientSuccessType } from "src/utils/types";
 
 export const sendDepositSuccessEvent = async (
   event: DepositRecepientSuccessType
