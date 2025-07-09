@@ -1,12 +1,14 @@
 import express from "express";
 import dotenv from "dotenv";
-import logger from "./utils/logger";
 import cookieParser from "cookie-parser";
 
-import authRoutes from "./routes/auth.routes";
-import accountRoutes from "./routes/accounts.routes"
+import logger from "src/utils/logger";
+import { connectToRabbitMQ } from "src/utils";
 
-import { connectToRabbitMQ } from "./services/rabbitmq";
+import authRoutes from "src/routes/auth.routes";
+import tokenRoutes from "src/routes/tokens.routes"
+import accountRoutes from "src/routes/accounts.routes"
+
 
 const app = express();
 dotenv.config();
@@ -16,6 +18,7 @@ app.use(cookieParser());
 
 // routes definition
 app.use("/api/auth", authRoutes);
+app.use("/api/token", tokenRoutes)
 app.use("/api/accounts", accountRoutes)
 
 connectToRabbitMQ();
