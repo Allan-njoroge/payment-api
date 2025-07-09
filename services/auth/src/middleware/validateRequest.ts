@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodError, ZodTypeAny } from "zod";
-import logger from "@/src/utils/logger"
+import logger from "src/utils/logger"
 
 const validateRequest =
   (schema: ZodTypeAny) =>
