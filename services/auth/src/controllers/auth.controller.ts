@@ -29,9 +29,10 @@ export const registerUser = async (
       await authService.registerUser(body);
 
     await publishEvent("auth.verification", {
-      email_address: body.emailAddress,
-      phone_number: body.phoneNumber,
-      verification_code: verificationCode,
+      firstName: body.firstName,
+      emailAddress: body.emailAddress,
+      phoneNumber: body.phoneNumber,
+      verificationCode,
     });
 
     logger.info(`User created successfully: ${body.emailAddress}`);
