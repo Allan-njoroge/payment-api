@@ -3,7 +3,7 @@ import { IV_LENGTH, REFRESH_TOKEN_ENCRYPTION_KEY } from "src/config";
 
 export const encrypt = (text: string): string => {
   const iv = crypto.randomBytes(Number(IV_LENGTH));
-  const cipher = crypto.createCipheriv("aes-256-cbc", Buffer.from(REFRESH_TOKEN_ENCRYPTION_KEY as string), iv);
+  const cipher = crypto.createCipheriv("aes-256-cbc", Buffer.from(REFRESH_TOKEN_ENCRYPTION_KEY as string, "hex"), iv);
   let encrypted = cipher.update(text);
 
   encrypted = Buffer.concat([encrypted, cipher.final()]);
