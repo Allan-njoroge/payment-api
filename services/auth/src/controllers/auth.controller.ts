@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { Request, Response } from "express";
 import {
   ForgotPasswordType,
@@ -25,25 +26,26 @@ export const registerUser = async (
   const body: RegisterUserType = req.body;
 
   try {
-    const { verificationCode, statusCode, message, user_id } =
+    const { verificationCode, statusCode, message, userId } =
       await authService.registerUser(body);
 
-    await publishEvent("auth.verification", {
+      await publishEvent("auth.verification", {
       firstName: body.firstName,
       emailAddress: body.emailAddress,
       phoneNumber: body.phoneNumber,
+      userId,
       verificationCode,
     });
 
     logger.info(`User created successfully: ${body.emailAddress}`);
-    return res.status(statusCode).json({ message: message, userId: user_id });
+    return res.status(statusCode).json({ message: message, userId });
   } catch (error: any) {
     logger.error(`User registration failed: ${error}`);
     if (error instanceof CustomError) {
       return res.status(error.statusCode).json({ message: error.message });
     }
 
-    return res.status(500).json({ message: "Failed to verify account" });
+    return res.status(500).json({ message: "Failed to reigister user" });
   }
 };
 
@@ -139,15 +141,17 @@ export const forgotPassword = async (
 ): Promise<Response> => {
   const { emailAddress }: ForgotPasswordType = req.body;
   try {
-    const { verificationCode, message, statusCode } =
+    const { verificationCode, message, statusCode, user } =
       await authService.forgotPassword({ emailAddress });
 
-    await publishEvent("auth.verification", {
-      email_address: emailAddress,
-      verification_code: verificationCode,
+    await publishEvent("auth.forgotPassword", {
+      emailAddress,
+      firstName: user.first_name,
+      userId: user.id,
+      verificationCode,
     });
 
-    return res.status(statusCode).json({ message });
+    return res.status(statusCode).json({ message, userId: user.id });
   } catch (error: any) {
     logger.error(`Failed to request request password change: ${emailAddress}`);
     if (error instanceof CustomError) {
@@ -171,10 +175,15 @@ export const resetPassword = async (
     const { message, statusCode } = await authService.resetPassword(body);
     return res.status(statusCode).json({ message });
   } catch (error: any) {
-    logger.error(`Failed to reset password: ${body.userId}`);
+    logger.error(`Failed to reset password: ${body.userId}: ${error}`);
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+      return res.status(404).json({"message": "Invalid code"})
+    }
+
     if (error instanceof CustomError) {
       return res.status(error.statusCode).json({ message: error.message });
     }
+
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
