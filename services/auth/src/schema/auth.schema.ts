@@ -20,7 +20,8 @@ export const registerUserSchema = object({
     phoneNumber: z
       .string()
       .regex(/^\d+$/, { message: "Phone must be a number" })
-      .min(10, { message: "Phone number must be atleast 10" }),
+      .min(10, { message: "Phone number must be atleast 10" })
+      .optional(),
     password: z
       .string()
       .min(8, { message: "Password must be atleast 8 characters" }),
