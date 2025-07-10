@@ -5,19 +5,21 @@ import { sendSMS } from "src/services/message.service";
 import { authMessage } from "src/templates/auth/message";
 
 type EventType = {
-  phoneNumber?: string,
-  emailAddress: string,
   firstName: string,
+  emailAddress: string,
+  phoneNumber?: string,
+  userId: string,
   verificationCode: number ,
 }
 
-export const sendVerificationCodeEvent = async ({emailAddress, phoneNumber, verificationCode, firstName}: EventType) => {
+export const sendVerificationCodeEvent = async ({ firstName, emailAddress, phoneNumber, userId, verificationCode }: EventType) => {
   try {
     await sendEmail({
       to: emailAddress,
       subject: "Payment API - COMPLETE REGISTRATION PROCESS",
       html: authEmail({
         firstName,
+        userId,
         verificationCode,
       }),
     });
