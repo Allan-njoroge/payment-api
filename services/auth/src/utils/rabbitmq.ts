@@ -1,4 +1,4 @@
-import amqp, { Connection, Channel } from "amqplib";
+import amqp, { Channel } from "amqplib";
 import logger from "../utils/logger";
 import dotenv from "dotenv";
 dotenv.config();
@@ -6,7 +6,7 @@ dotenv.config();
 let connection = null;
 let channel: Channel | null = null;
 
-const EXCHANGE_NAME = "auth_notification";
+const EXCHANGE_NAME = "payment_api";
 
 export const connectToRabbitMQ = async (): Promise<Channel | null> => {
   try {
