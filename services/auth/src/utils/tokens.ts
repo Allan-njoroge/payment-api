@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import prisma from "./prisma";
-import logger from "src/utils/logger"
+import logger from "./logger"
 import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from "src/config";
 import { CustomError } from "./errors";
 import { TokenType } from "@prisma/client";
