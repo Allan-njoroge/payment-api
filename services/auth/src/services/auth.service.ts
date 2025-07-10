@@ -61,7 +61,7 @@ export class AuthService {
     return {
       statusCode: 201,
       verificationCode,
-      user_id: user.id,
+      userId: user.id,
       message: "Verification code sent to email",
     };
   }
@@ -117,7 +117,7 @@ export class AuthService {
     });
 
     if (!user || !user.is_active)
-      throw new CustomError(403, "No active account found");
+      throw new CustomError(404, "No active account found");
     if (!compareSync(password, user.password))
       throw new CustomError(400, "Invalid email or password");
 
@@ -158,23 +158,25 @@ export class AuthService {
   async forgotPassword(data: ForgotPasswordType) {
     const user = await prisma.user.findUnique({
       where: { email_address: data.emailAddress },
-      select: { id: true, email_address: true },
+      select: { id: true, first_name: true },
     });
 
     if (!user) throw new CustomError(404, "User does not exist");
 
     const code = Math.floor(100000 + Math.random() * 900000);
-    await prisma.verificationCode.create({
-      data: {
+    await prisma.verificationCode.upsert({
+      where: {user_id: user.id},
+      create: {
         user_id: user.id,
         verification_code: code,
       },
+      update: {verification_code: code}
     });
 
     return {
       statusCode: 200,
       verificationCode: code,
-      user_id: user.id,
+      user,
       message: "Verification code sent to email",
     };
   }
@@ -202,7 +204,7 @@ export class AuthService {
 
     return {
       statusCode: 200,
-      message: "Password updated successfully"
+      message: "Password reset successful"
     }
   }
 }
