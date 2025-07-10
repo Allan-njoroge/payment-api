@@ -17,3 +17,5 @@ export const EMAIL_USERNAME = process.env.EMAIL_USERNAME
 export const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD
 
 export const RABBITMQ_URL = process.env.RABBITMQ_URL
+
+export const CLIENT_DOMAIN = "http://localhost:3000"
