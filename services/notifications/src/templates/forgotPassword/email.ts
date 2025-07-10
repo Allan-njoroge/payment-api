@@ -1,22 +1,22 @@
 import { CLIENT_DOMAIN } from "src/config";
 
-type AuthEmailTypes = {
+type ForgotPasswordEmailType = {
   firstName: string;
   userId: string;
   verificationCode: number;
 };
 
-export const authEmail = ({userId, firstName, verificationCode}: AuthEmailTypes): string => {
+export const forgotPasswordEmail = ({firstName, userId, verificationCode}: ForgotPasswordEmailType): string => {
   const url: string = `${CLIENT_DOMAIN}/${userId}/${verificationCode}`
   const email: string = `
     <b>Hello ${firstName}</b>,
     <br/>
     <p>
-      We are pleased to have you at Payment API. To complete you registration, please verify you account.
+      To complete your password reset process, please use the verification code below or click the link below
       <br/>
       Your verification code is: <span style="color: #7c3aed">${verificationCode}</span>
     </p>
-    <>Or you can click the link below <p> 
+    <br/>
     <a href=${url} target="_blank">${url}</a>
     <br/> 
     <p><b>NOTE: </b> This code is valid for 10 minutes</p>
